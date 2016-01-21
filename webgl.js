@@ -26,15 +26,15 @@ var Webgl = {
   compileShaders: function(vert, frag) {
     var gl = this.gl;
     this.shader = new Shader(gl, vert, frag);
-    var shaderProgram = this.shader.shaderProgram;
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+    var shader = this.shader;
+    shader.vertexPositionAttribute = gl.getAttribLocation(shader.shaderProgram, "aVertexPosition");
+    gl.enableVertexAttribArray(shader.vertexPositionAttribute);
 
-    shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+    shader.textureCoordAttribute = gl.getAttribLocation(shader.shaderProgram, "aTextureCoord");
 
-    gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+    gl.enableVertexAttribArray(shader.textureCoordAttribute);
 
-    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+    shader.samplerUniform = gl.getUniformLocation(shader.shaderProgram, "uSampler");
   },
 
   draw: function() {
@@ -43,9 +43,9 @@ var Webgl = {
     gl.viewport(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    var shaderProgram = this.shader.shaderProgram;
+    var shader = this.shader;
 
-    var matrixLocation = gl.getUniformLocation(shaderProgram, "uMatrix");
+    var matrixLocation = gl.getUniformLocation(shader.shaderProgram, "uMatrix");
 
     gl.activeTexture(gl.TEXTURE0);
     var atlas = this.atlas;
@@ -71,7 +71,7 @@ var Webgl = {
       ];
 
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-      gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(shader.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
 
@@ -91,7 +91,7 @@ var Webgl = {
         tx2, ty2
       ];
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-      gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(shader.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
 
       mat3.multiply(this.mvMatrix, this.mvMatrix, [
         2 / this.canvas.clientWidth, 0, 0,
@@ -100,7 +100,7 @@ var Webgl = {
       ]);
 
       gl.uniformMatrix3fv(matrixLocation, false, this.mvMatrix);
-      gl.uniform1i(shaderProgram.samplerUniform, 0);
+      gl.uniform1i(shader.samplerUniform, 0);
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 

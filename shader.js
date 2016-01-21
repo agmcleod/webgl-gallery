@@ -30,16 +30,16 @@ var Shader = (function () {
   }
 
   constructor.prototype.setMatrixUniforms = function(gl, shaderProgram) {
-    shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-    shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+    this.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+    this.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   }
 
   constructor.prototype.setShaderAttributes = function(gl, shaderProgram) {
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+    this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+    gl.enableVertexAttribArray(this.vertexPositionAttribute);
 
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-    gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+    this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+    gl.enableVertexAttribArray(this.vertexColorAttribute);
   };
 
   return constructor;
