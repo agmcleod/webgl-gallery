@@ -4,7 +4,7 @@ AssetLoader.loadAtlas(function(atlas) {
   AssetLoader.loadShaderCode(function(vert, frag) {
     Webgl.initialize(canvas);
     Webgl.compileShaders(vert, frag);
-    Webgl.bindBuffers();
+    Webgl.createBuffers();
     Webgl.setupGL(atlas);
 
     var gallery = new Gallery(atlas, canvas.clientWidth);

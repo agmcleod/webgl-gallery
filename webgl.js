@@ -4,9 +4,10 @@ var Webgl = {
     this.gl = canvas.getContext('experimental-webgl');
   },
 
-  bindBuffers: function() {
+  createBuffers: function() {
     this.positionBuffer = this.gl.createBuffer();
     this.textureBuffer = this.gl.createBuffer();
+    this.indexBuffer = this.gl.createBuffer();
   },
 
   buildTexture: function(image) {
@@ -66,8 +67,6 @@ var Webgl = {
         x1, y1,
         x2, y1,
         x1, y2,
-        x1, y2,
-        x2, y1,
         x2, y2
       ];
 
@@ -89,8 +88,6 @@ var Webgl = {
         tx1, ty1,
         tx2, ty1,
         tx1, ty2,
-        tx1, ty2,
-        tx2, ty1,
         tx2, ty2
       ];
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
@@ -104,7 +101,16 @@ var Webgl = {
 
       gl.uniformMatrix3fv(matrixLocation, false, this.mvMatrix);
       gl.uniform1i(shaderProgram.samplerUniform, 0);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
+
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+
+      var indexes = [
+        0, 1, 2, 2, 3, 1
+      ];
+
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexes), gl.STATIC_DRAW);
+
+      gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     }
 
     requestAnimationFrame(Webgl.draw);
