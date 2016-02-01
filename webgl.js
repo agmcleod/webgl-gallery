@@ -53,12 +53,13 @@
       this.verts[vertexOffset + 6] = x2, this.verts[vertexOffset + 7] = y2;
 
       var indiceOffset = this.quadCount * INDICES_PER_QUAD;
-      this.indices[indiceOffset] = vertexOffset;
-      this.indices[indiceOffset + 1] = vertexOffset + 1;
-      this.indices[indiceOffset + 2] = vertexOffset + 2;
-      this.indices[indiceOffset + 3] = vertexOffset + 2;
-      this.indices[indiceOffset + 4] = vertexOffset + 3;
-      this.indices[indiceOffset + 5] = vertexOffset + 1;
+      var vertexIndex = vertexOffset / 2;
+      this.indices[indiceOffset] = vertexIndex;
+      this.indices[indiceOffset + 1] = vertexIndex + 1;
+      this.indices[indiceOffset + 2] = vertexIndex + 2;
+      this.indices[indiceOffset + 3] = vertexIndex + 2;
+      this.indices[indiceOffset + 4] = vertexIndex + 3;
+      this.indices[indiceOffset + 5] = vertexIndex + 1;
 
       var sx = region.x;
       var sy = region.y;
