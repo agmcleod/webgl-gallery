@@ -4,6 +4,7 @@
   var INDICES_PER_QUAD = 6;
   var FLOATS_PER_VERT = 2;
   var Webgl = {
+    cameraOffset: {x: 0, y: 0},
     initialize: function(canvas) {
       this.canvas = canvas;
       this.gl = canvas.getContext('experimental-webgl');
@@ -98,6 +99,12 @@
       gl.bindTexture(gl.TEXTURE_2D, atlas.texture);
       mat3.identity(this.mvMatrix);
 
+      mat3.translate(this.mvMatrix, this.mvMatrix, [
+        this.cameraOffset.x, this.cameraOffset.y, 0,
+        0, 0, 0,
+        0, 0, 1
+      ]);
+
       mat3.multiply(this.mvMatrix, this.mvMatrix, [
         2 / this.canvas.clientWidth, 0, 0,
         0, -2 / this.canvas.clientHeight, 0,
@@ -121,8 +128,6 @@
       if (this.quadCount > 0) {
         this.flushQuads();
       }
-
-      requestAnimationFrame(Webgl.draw);
     },
 
     flushQuads: function() {
