@@ -130,11 +130,11 @@
       var shader = this.shader;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.verts, gl.STATIC_DRAW);
-      gl.vertexAttribPointer(shader.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(shader.vertexPositionAttribute, FLOATS_PER_VERT, gl.FLOAT, false, 0, 0);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.textureCoords, gl.STATIC_DRAW);
-      gl.vertexAttribPointer(shader.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(shader.textureCoordAttribute, FLOATS_PER_VERT, gl.FLOAT, false, 0, 0);
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
@@ -147,7 +147,7 @@
     initArrays: function() {
       this.verts = new Float32Array(MAX_QUADS_PER_BATCH * VERTS_PER_QUAD * FLOATS_PER_VERT);
       this.textureCoords = new Float32Array(MAX_QUADS_PER_BATCH * VERTS_PER_QUAD * FLOATS_PER_VERT);
-      this.indices = new Float32Array(MAX_QUADS_PER_BATCH * INDICES_PER_QUAD);
+      this.indices = new Uint16Array(MAX_QUADS_PER_BATCH * INDICES_PER_QUAD);
       this.quadCount = 0;
     },
 
