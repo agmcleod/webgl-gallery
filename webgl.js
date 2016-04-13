@@ -66,9 +66,9 @@
       var sh = region.h;
 
       var tx1 = sx / atlas.image.width;
-      var ty1 = 1.0 - (sy / atlas.image.height);
+      var ty1 = (sy / atlas.image.height);
       var tx2 = ((sx + sw) / atlas.image.width);
-      var ty2 = 1.0 - ((sy + sh) / atlas.image.height);
+      var ty2 = ((sy + sh) / atlas.image.height);
 
       this.textureCoords[vertexOffset] = tx1, this.textureCoords[vertexOffset + 1] = ty1;
       this.textureCoords[vertexOffset + 2] = tx2, this.textureCoords[vertexOffset + 3] = ty1;
