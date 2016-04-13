@@ -4,17 +4,18 @@
     var currentTime = Date.now();
     var delta = currentTime - time;
     var cameraOffset = Webgl.cameraOffset;
+    var speed = 0.0001;
     if (InputManager.isKeyPressed(KEYS.W)) {
-      cameraOffset.y += 0.0001 * delta;
+      cameraOffset.y += speed * delta;
     }
     if (InputManager.isKeyPressed(KEYS.A)) {
-      cameraOffset.x -= 0.0001 * delta;
+      cameraOffset.x -= speed * delta;
     }
     if (InputManager.isKeyPressed(KEYS.S)) {
-      cameraOffset.y -= 0.0001 * delta;
+      cameraOffset.y -= speed * delta;
     }
     if (InputManager.isKeyPressed(KEYS.D)) {
-      cameraOffset.x += 0.0001 * delta;
+      cameraOffset.x += speed * delta;
     }
     Webgl.draw();
     time = currentTime;
@@ -32,7 +33,7 @@
 
       InputManager.bind();
 
-      var gallery = new Gallery(atlas, canvas.clientWidth);
+      var gallery = new Gallery(atlas, canvas.clientWidth, canvas.clientHeight);
       gallery.buildGalleryImages();
 
       Webgl.atlas = atlas;

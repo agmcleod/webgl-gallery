@@ -44,10 +44,8 @@
       shader.samplerUniform = gl.getUniformLocation(shader.shaderProgram, "uSampler");
     },
 
-    addQuad: function(x1, y1, atlas, region) {
+    addQuad: function(x1, y1, x2, y2, atlas, region) {
       var vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
-      var x2 = x1 + region.w;
-      var y2 = y1 + region.h;
       this.verts[vertexOffset] = x1, this.verts[vertexOffset + 1] = y1;
       this.verts[vertexOffset + 2] = x2, this.verts[vertexOffset + 3] = y1;
       this.verts[vertexOffset + 4] = x1, this.verts[vertexOffset + 5] = y2;
@@ -105,12 +103,6 @@
         0, 0, 1
       ]);
 
-      mat3.multiply(this.mvMatrix, this.mvMatrix, [
-        2 / this.canvas.clientWidth, 0, 0,
-        0, -2 / this.canvas.clientHeight, 0,
-        -1, 1, 1
-      ]);
-
       gl.uniformMatrix3fv(matrixLocation, false, this.mvMatrix);
       gl.uniform1i(shader.samplerUniform, 0);
 
@@ -122,7 +114,7 @@
         var y1 = galleryImage.position.y;
 
         var region = atlas.regions[galleryImage.regionName];
-        this.addQuad(x1, y1, atlas, region);
+        this.addQuad(x1, y1, x1 + galleryImage.width, y1 + galleryImage.height, atlas, region);
       }
 
       if (this.quadCount > 0) {
