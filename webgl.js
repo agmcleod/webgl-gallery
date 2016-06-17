@@ -46,10 +46,10 @@
 
     addQuad: function(x1, y1, x2, y2, atlas, region) {
       var vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
-      this.verts[vertexOffset] = x1, this.verts[vertexOffset + 1] = y1;
-      this.verts[vertexOffset + 2] = x2, this.verts[vertexOffset + 3] = y1;
-      this.verts[vertexOffset + 4] = x1, this.verts[vertexOffset + 5] = y2;
-      this.verts[vertexOffset + 6] = x2, this.verts[vertexOffset + 7] = y2;
+      this.verts[vertexOffset] = x1, this.verts[vertexOffset + 1] = y2;
+      this.verts[vertexOffset + 2] = x2, this.verts[vertexOffset + 3] = y2;
+      this.verts[vertexOffset + 4] = x1, this.verts[vertexOffset + 5] = y1;
+      this.verts[vertexOffset + 6] = x2, this.verts[vertexOffset + 7] = y1;
 
       var indiceOffset = this.quadCount * INDICES_PER_QUAD;
       var vertexIndex = vertexOffset / 2;
@@ -66,9 +66,9 @@
       var sh = region.h;
 
       var tx1 = sx / atlas.image.width;
-      var ty1 = (sy / atlas.image.height);
+      var ty1 = 1 - (sy / atlas.image.height);
       var tx2 = ((sx + sw) / atlas.image.width);
-      var ty2 = ((sy + sh) / atlas.image.height);
+      var ty2 = 1 - ((sy + sh) / atlas.image.height);
 
       this.textureCoords[vertexOffset] = tx1, this.textureCoords[vertexOffset + 1] = ty1;
       this.textureCoords[vertexOffset + 2] = tx2, this.textureCoords[vertexOffset + 3] = ty1;
