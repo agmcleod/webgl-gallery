@@ -1,6 +1,6 @@
-var Shader = (function () {
-  var constructor = function(gl, vertText, fragText) {
-    var shaderProgram = gl.createProgram();
+export default class Shader {
+  constructor(gl, vertText, fragText) {
+    const shaderProgram = gl.createProgram();
     this.linkShaderProgram(gl, shaderProgram, vertText, fragText);
 
     gl.useProgram(shaderProgram);
@@ -11,13 +11,13 @@ var Shader = (function () {
     this.shaderProgram = shaderProgram;
   }
 
-  constructor.prototype.linkShaderProgram = function (gl, shaderProgram, vertText, fragText) {
-    var vert = gl.createShader(gl.VERTEX_SHADER);
+  linkShaderProgram(gl, shaderProgram, vertText, fragText) {
+    const vert = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vert, vertText);
     gl.compileShader(vert);
     gl.attachShader(shaderProgram, vert);
 
-    var frag = gl.createShader(gl.FRAGMENT_SHADER);
+    const frag = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(frag, fragText);
     gl.compileShader(frag);
     gl.attachShader(shaderProgram, frag);
@@ -25,22 +25,20 @@ var Shader = (function () {
     gl.linkProgram(shaderProgram);
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      throw "Could not initialize shaders";
+      throw new Error("Could not initialize shaders");
     }
   }
 
-  constructor.prototype.setMatrixUniforms = function(gl, shaderProgram) {
+  setMatrixUniforms(gl, shaderProgram) {
     this.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
     this.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   }
 
-  constructor.prototype.setShaderAttributes = function(gl, shaderProgram) {
+  setShaderAttributes(gl, shaderProgram) {
     this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
     gl.enableVertexAttribArray(this.vertexPositionAttribute);
 
     this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
     gl.enableVertexAttribArray(this.vertexColorAttribute);
-  };
-
-  return constructor;
-})();
+  }
+}

@@ -1,27 +1,30 @@
-var AssetLoader = {
-  loadAtlas: function(callback) {
+import Atlas from './atlas';
+
+const AssetLoader = {
+  loadAtlas(callback) {
     this.images = [];
-    this.loadImage('imgs/atlas.png', function(image) {
-      microAjax('imgs/atlas.json', function (jsonData) {
+    this.loadImage('imgs/atlas.png', (image) => {
+      microAjax('imgs/atlas.json', (jsonData) => {
         callback(new Atlas(image, JSON.parse(jsonData)));
       });
     });
   },
 
-  loadImage: function(path, callback) {
-    var image = new Image();
+  loadImage(path, callback) {
+    const image = new Image();
     image.src = path;
     image.onload = function() {
       callback(image);
-    }
+    };
   },
 
-  loadShaderCode: function(callback) {
-    microAjax('vert.glsl', function(res) {
-      var vert = res;
-      microAjax('frag.glsl', function(res) {
-        callback(vert, res);
+  loadShaderCode(callback) {
+    microAjax('vert.glsl', function(vertData) {
+      microAjax('frag.glsl', function(fragData) {
+        callback(vertData, fragData);
       });
     });
   }
 };
+
+export default AssetLoader;

@@ -1,42 +1,37 @@
-(function() {
-  var KEYS = {
-    W: 87,
-    A: 65,
-    S: 83,
-    D: 68
-  };
+export const KEYS = {
+  W: 87,
+  A: 65,
+  S: 83,
+  D: 68
+};
 
-  var capture = [KEYS.W, KEYS.A, KEYS.S, KEYS.D];
+const capture = [KEYS.W, KEYS.A, KEYS.S, KEYS.D];
 
-  var pressedKeys = {};
+const pressedKeys = {};
 
-  var InputManager = {
-    bind: function() {
-      window.addEventListener('keydown', this.keydown, false);
-      window.addEventListener('keyup', this.keyup, false);
-    },
+export default {
+  bind() {
+    window.addEventListener('keydown', this.keydown, false);
+    window.addEventListener('keyup', this.keyup, false);
+  },
 
-    isKeyPressed(key) {
-      return !!pressedKeys[key];
-    },
+  isKeyPressed(key) {
+    return !!pressedKeys[key];
+  },
 
-    keydown: function(e, keyCode) {
-      keyCode = keyCode || e.keyCode;
-      if (capture.indexOf(keyCode) !== -1) {
-        e.preventDefault();
-        pressedKeys[keyCode] = true;
-      }
-    },
-
-    keyup: function(e, keyCode) {
-      keyCode = keyCode || e.keyCode;
-      if (capture.indexOf(keyCode) !== -1) {
-        e.preventDefault();
-        pressedKeys[keyCode] = false;
-      }
+  keydown(e, keyCode) {
+    const code = keyCode || e.keyCode;
+    if (capture.indexOf(code) !== -1) {
+      e.preventDefault();
+      pressedKeys[code] = true;
     }
-  };
+  },
 
-  window.InputManager = InputManager;
-  window.KEYS = KEYS;
-})();
+  keyup(e, keyCode) {
+    const code = keyCode || e.keyCode;
+    if (capture.indexOf(code) !== -1) {
+      e.preventDefault();
+      pressedKeys[keyCode] = false;
+    }
+  }
+};

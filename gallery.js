@@ -1,5 +1,7 @@
-var Gallery = (function() {
-  var constructor = function(atlas, screenWidth, screenHeight) {
+import GalleryImage from './gallery_image';
+
+export default class Gallery {
+  constructor(atlas, screenWidth, screenHeight) {
     this.atlas = atlas;
     this.screenWidth = screenWidth;
     this.padding = 10;
@@ -7,12 +9,12 @@ var Gallery = (function() {
     this.screenHeight = screenHeight;
   }
 
-  constructor.prototype.buildGalleryImages = function() {
-    var regionNames = Object.keys(this.atlas.regions);
+  buildGalleryImages() {
+    const regionNames = Object.keys(this.atlas.regions);
     this.galleryImages = [];
-    var lastRegion = null;
-    var x = 0, y = 0, maxY = 0;
-    for (var i = 0; i < regionNames.length; i++) {
+    let lastRegion = null;
+    let x = 0, y = 0, maxY = 0;
+    for (let i = 0; i < regionNames.length; i++) {
       if (lastRegion !== null) {
         x += this.targetWidth + this.padding;
       }
@@ -25,12 +27,10 @@ var Gallery = (function() {
       lastRegion = this.atlas.regions[regionNames[i]];
 
       maxY = Math.max(lastRegion.h, maxY) + y;
-      var gi = new GalleryImage(regionNames[i], x / this.screenWidth - 1, y / this.screenHeight - 1);
+      const gi = new GalleryImage(regionNames[i], x / this.screenWidth - 1, y / this.screenHeight - 1);
       gi.width = this.targetWidth / this.screenWidth;
       gi.height = lastRegion.w / lastRegion.h * gi.width;
       this.galleryImages.push(gi);
     }
-  };
-
-  return constructor;
-})();
+  }
+}
