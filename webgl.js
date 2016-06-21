@@ -41,6 +41,8 @@ export default {
     gl.enableVertexAttribArray(shader.textureCoordAttribute);
 
     shader.textureUniform = gl.getUniformLocation(shader.shaderProgram, "texture");
+    shader.matrixUniform = gl.getUniformLocation(shader.shaderProgram, "uMatrix");
+    shader.colorUniform = gl.getUniformLocation(shader.shaderProgram, "color");
   },
 
   addRect(x1, y1, x2, y2) {
@@ -148,8 +150,6 @@ export default {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     const shader = this.shader;
 
-    const matrixLocation = gl.getUniformLocation(shader.shaderProgram, "uMatrix");
-
     gl.activeTexture(gl.TEXTURE0);
     mat3.identity(this.mvMatrix);
 
@@ -159,7 +159,7 @@ export default {
       0, 0, 1
     ]);
 
-    gl.uniformMatrix3fv(matrixLocation, false, this.mvMatrix);
+    gl.uniformMatrix3fv(shader.matrixUniform, false, this.mvMatrix);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
     const atlas = this.atlas;
@@ -167,6 +167,8 @@ export default {
     gl.activeTexture(gl.TEXTURE0);
 
     gl.bindTexture(gl.TEXTURE_2D, atlas.texture);
+
+    gl.uniform3fv(this.shader.colorUniform, new Float32Array([1.0, 1.0, 1.0]));
 
     for (let i = 0; i < this.gallery.galleryImages.length; i++) {
       const galleryImage = this.gallery.galleryImages[i];
@@ -180,6 +182,8 @@ export default {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bindTexture(gl.TEXTURE_2D, this.colorTexture);
+
+    gl.uniform3f(this.shader.colorUniform, 0.05, 0.9, 0.05);
 
     for (let i = 0; i < this.gallery.galleryImages.length; i++) {
       const galleryImage = this.gallery.galleryImages[i];
