@@ -9,7 +9,6 @@ export default {
   initialize(canvas) {
     this.canvas = canvas;
     this.gl = canvas.getContext('experimental-webgl');
-    this.initArrays();
   },
 
   createBuffers() {
@@ -22,7 +21,6 @@ export default {
     const gl = this.gl;
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -42,22 +40,22 @@ export default {
 
     gl.enableVertexAttribArray(shader.textureCoordAttribute);
 
-    shader.samplerUniform = gl.getUniformLocation(shader.shaderProgram, "uSampler");
+    shader.textureUniform = gl.getUniformLocation(shader.shaderProgram, "texture");
   },
 
-  addQuad(x1, y1, x2, y2, atlas, region) {
+  addRect(x1, y1, x2, y2) {
     const vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
     this.verts[vertexOffset] = x1;
-    this.verts[vertexOffset + 1] = y2;
+    this.verts[vertexOffset + 1] = y1;
 
     this.verts[vertexOffset + 2] = x2;
-    this.verts[vertexOffset + 3] = y2;
+    this.verts[vertexOffset + 3] = y1;
 
     this.verts[vertexOffset + 4] = x1;
-    this.verts[vertexOffset + 5] = y1;
+    this.verts[vertexOffset + 5] = y2;
 
     this.verts[vertexOffset + 6] = x2;
-    this.verts[vertexOffset + 7] = y1;
+    this.verts[vertexOffset + 7] = y2;
 
     const indiceOffset = this.quadCount * INDICES_PER_QUAD;
     const vertexIndex = vertexOffset / 2;
@@ -68,15 +66,10 @@ export default {
     this.indices[indiceOffset + 4] = vertexIndex + 3;
     this.indices[indiceOffset + 5] = vertexIndex + 1;
 
-    const sx = region.x;
-    const sy = region.y;
-    const sw = region.w;
-    const sh = region.h;
-
-    const tx1 = sx / atlas.image.width;
-    const ty1 = 1 - (sy / atlas.image.height);
-    const tx2 = ((sx + sw) / atlas.image.width);
-    const ty2 = 1 - ((sy + sh) / atlas.image.height);
+    const tx1 = 0;
+    const ty1 = 0;
+    const tx2 = 1;
+    const ty2 = 1;
 
     this.textureCoords[vertexOffset] = tx1;
     this.textureCoords[vertexOffset + 1] = ty1;
@@ -97,6 +90,56 @@ export default {
     }
   },
 
+  addQuad(x1, y1, x2, y2, atlas, region) {
+    const vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
+    this.verts[vertexOffset] = x1;
+    this.verts[vertexOffset + 1] = y1;
+
+    this.verts[vertexOffset + 2] = x2;
+    this.verts[vertexOffset + 3] = y1;
+
+    this.verts[vertexOffset + 4] = x1;
+    this.verts[vertexOffset + 5] = y2;
+
+    this.verts[vertexOffset + 6] = x2;
+    this.verts[vertexOffset + 7] = y2;
+
+    const indiceOffset = this.quadCount * INDICES_PER_QUAD;
+    const vertexIndex = vertexOffset / 2;
+    this.indices[indiceOffset] = vertexIndex;
+    this.indices[indiceOffset + 1] = vertexIndex + 1;
+    this.indices[indiceOffset + 2] = vertexIndex + 2;
+    this.indices[indiceOffset + 3] = vertexIndex + 2;
+    this.indices[indiceOffset + 4] = vertexIndex + 3;
+    this.indices[indiceOffset + 5] = vertexIndex + 1;
+
+    const sx = region.x;
+    const sy = region.y;
+    const sw = region.w;
+    const sh = region.h;
+
+    const tx1 = sx / atlas.image.width;
+    const ty1 = (sy / atlas.image.height);
+    const tx2 = ((sx + sw) / atlas.image.width);
+    const ty2 = ((sy + sh) / atlas.image.height);
+
+    this.textureCoords[vertexOffset] = tx1;
+    this.textureCoords[vertexOffset + 1] = ty1;
+
+    this.textureCoords[vertexOffset + 2] = tx2;
+    this.textureCoords[vertexOffset + 3] = ty1;
+
+    this.textureCoords[vertexOffset + 4] = tx1;
+    this.textureCoords[vertexOffset + 5] = ty2;
+
+    this.textureCoords[vertexOffset + 6] = tx2;
+    this.textureCoords[vertexOffset + 7] = ty2;
+
+    this.quadCount++;
+
+    this.flushQuads();
+  },
+
   draw() {
     const gl = this.gl;
 
@@ -108,8 +151,6 @@ export default {
     const matrixLocation = gl.getUniformLocation(shader.shaderProgram, "uMatrix");
 
     gl.activeTexture(gl.TEXTURE0);
-    const atlas = this.atlas;
-    gl.bindTexture(gl.TEXTURE_2D, atlas.texture);
     mat3.identity(this.mvMatrix);
 
     mat3.translate(this.mvMatrix, this.mvMatrix, [
@@ -119,22 +160,36 @@ export default {
     ]);
 
     gl.uniformMatrix3fv(matrixLocation, false, this.mvMatrix);
-    gl.uniform1i(shader.samplerUniform, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+
+    const atlas = this.atlas;
+    gl.uniform1i(shader.textureUniform, 0);
+    gl.activeTexture(gl.TEXTURE0);
+
+    gl.bindTexture(gl.TEXTURE_2D, atlas.texture);
 
     for (let i = 0; i < this.gallery.galleryImages.length; i++) {
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-
       const galleryImage = this.gallery.galleryImages[i];
       const x1 = galleryImage.position.x;
       const y1 = galleryImage.position.y;
-
       const region = atlas.regions[galleryImage.regionName];
-      this.addQuad(x1, y1, x1 + galleryImage.width, y1 + galleryImage.height, atlas, region);
+      this.addQuad(x1, y1, x1 + galleryImage.width, y1 - galleryImage.height, atlas, region);
     }
 
-    if (this.quadCount > 0) {
-      this.flushQuads();
+    this.flushQuads();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.bindTexture(gl.TEXTURE_2D, this.colorTexture);
+
+    for (let i = 0; i < this.gallery.galleryImages.length; i++) {
+      const galleryImage = this.gallery.galleryImages[i];
+      const x1 = galleryImage.cellPosition.x;
+      const y1 = galleryImage.cellPosition.y;
+      const size = Math.max(galleryImage.width, galleryImage.height);
+      this.addRect(x1, y1, x1 + size, y1 - size);
     }
+
+    this.flushQuads();
   },
 
   flushQuads() {
@@ -163,7 +218,18 @@ export default {
     this.quadCount = 0;
   },
 
+  initColorTexture() {
+    const gl = this.gl;
+    this.colorTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.colorTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([255, 255, 255, 255]));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  },
+
   setupGL(atlas) {
+    this.initArrays();
     const gl = this.gl;
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -171,5 +237,6 @@ export default {
 
     this.mvMatrix = mat3.create();
     atlas.texture = this.buildTexture(atlas.image);
+    this.initColorTexture();
   }
 };
