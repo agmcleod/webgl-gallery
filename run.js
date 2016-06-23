@@ -4,22 +4,28 @@ import Webgl from './webgl';
 import InputManager, {KEYS} from './input';
 
 let time;
+const SPEED = 0.001;
 function update() {
   const currentTime = Date.now();
   const delta = currentTime - time;
   const cameraOffset = Webgl.cameraOffset;
-  const speed = 0.0001;
   if (InputManager.isKeyPressed(KEYS.W)) {
-    cameraOffset.y += speed * delta;
+    cameraOffset[1] += SPEED * delta;
   }
   if (InputManager.isKeyPressed(KEYS.A)) {
-    cameraOffset.x -= speed * delta;
+    cameraOffset[0] -= SPEED * delta;
   }
   if (InputManager.isKeyPressed(KEYS.S)) {
-    cameraOffset.y -= speed * delta;
+    cameraOffset[1] -= SPEED * delta;
   }
   if (InputManager.isKeyPressed(KEYS.D)) {
-    cameraOffset.x += speed * delta;
+    cameraOffset[0] += SPEED * delta;
+  }
+  if (InputManager.isKeyPressed(KEYS.Q)) {
+    cameraOffset[2] += SPEED * delta;
+  }
+  if (InputManager.isKeyPressed(KEYS.E)) {
+    cameraOffset[2] -= SPEED * delta;
   }
   Webgl.draw();
   time = currentTime;

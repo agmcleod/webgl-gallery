@@ -45,7 +45,6 @@ export default class Gallery {
         width, height, cellX, cellY
       );
 
-      console.log(gi);
       this.galleryImages.push(gi);
 
       colCount++;

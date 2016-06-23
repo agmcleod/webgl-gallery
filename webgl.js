@@ -3,9 +3,10 @@ import Shader from './shader';
 const MAX_QUADS_PER_BATCH = 100; // arbitrary for now
 const VERTS_PER_QUAD = 4;
 const INDICES_PER_QUAD = 6;
-const FLOATS_PER_VERT = 2;
+const FLOATS_PER_VERT = 3;
+const FLOATS_PER_TEXTURE_VERT = 2;
 export default {
-  cameraOffset: {x: 0, y: 0},
+  cameraOffset: vec3.create(),
   initialize(canvas) {
     this.canvas = canvas;
     this.gl = canvas.getContext('experimental-webgl');
@@ -45,8 +46,7 @@ export default {
     shader.colorUniform = gl.getUniformLocation(shader.shaderProgram, "color");
   },
 
-  addRect(x1, y1, x2, y2) {
-    const vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
+  addPositionalData(vertexOffset, x1, x2, y1, y2) {
     this.verts[vertexOffset] = x1;
     this.verts[vertexOffset + 1] = y1;
 
@@ -67,6 +67,11 @@ export default {
     this.indices[indiceOffset + 3] = vertexIndex + 2;
     this.indices[indiceOffset + 4] = vertexIndex + 3;
     this.indices[indiceOffset + 5] = vertexIndex + 1;
+  },
+
+  addRect(x1, y1, x2, y2) {
+    const vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
+    this.addPositionalData(x1, y1, x2, y2);
 
     const tx1 = 0;
     const ty1 = 0;
@@ -94,26 +99,7 @@ export default {
 
   addQuad(x1, y1, x2, y2, atlas, region) {
     const vertexOffset = this.quadCount * VERTS_PER_QUAD * FLOATS_PER_VERT;
-    this.verts[vertexOffset] = x1;
-    this.verts[vertexOffset + 1] = y1;
-
-    this.verts[vertexOffset + 2] = x2;
-    this.verts[vertexOffset + 3] = y1;
-
-    this.verts[vertexOffset + 4] = x1;
-    this.verts[vertexOffset + 5] = y2;
-
-    this.verts[vertexOffset + 6] = x2;
-    this.verts[vertexOffset + 7] = y2;
-
-    const indiceOffset = this.quadCount * INDICES_PER_QUAD;
-    const vertexIndex = vertexOffset / 2;
-    this.indices[indiceOffset] = vertexIndex;
-    this.indices[indiceOffset + 1] = vertexIndex + 1;
-    this.indices[indiceOffset + 2] = vertexIndex + 2;
-    this.indices[indiceOffset + 3] = vertexIndex + 2;
-    this.indices[indiceOffset + 4] = vertexIndex + 3;
-    this.indices[indiceOffset + 5] = vertexIndex + 1;
+    this.addPositionalData(x1, y1, x2, y2);
 
     const sx = region.x;
     const sy = region.y;
@@ -151,15 +137,12 @@ export default {
     const shader = this.shader;
 
     gl.activeTexture(gl.TEXTURE0);
-    mat3.identity(this.mvMatrix);
+    mat4.identity(this.mvMatrix);
+    mat4.perspective(this.mvMatrix, 1 * Math.PI / 180, this.canvas.clientWidth / this.canvas.clientHeight, 1, 100);
 
-    mat3.translate(this.mvMatrix, this.mvMatrix, [
-      this.cameraOffset.x, this.cameraOffset.y, 0,
-      0, 0, 0,
-      0, 0, 1
-    ]);
+    mat4.translate(this.mvMatrix, this.mvMatrix, this.cameraOffset);
 
-    gl.uniformMatrix3fv(shader.matrixUniform, false, this.mvMatrix);
+    gl.uniformMatrix4fv(shader.matrixUniform, false, this.mvMatrix);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
     const atlas = this.atlas;
@@ -185,13 +168,15 @@ export default {
 
     gl.uniform3f(this.shader.colorUniform, 0.05, 0.9, 0.05);
 
-    for (let i = 0; i < this.gallery.galleryImages.length; i++) {
-      const galleryImage = this.gallery.galleryImages[i];
-      const x1 = galleryImage.cellPosition.x;
-      const y1 = galleryImage.cellPosition.y;
-      const size = Math.max(galleryImage.width, galleryImage.height);
-      this.addRect(x1, y1, x1 + size, y1 - size);
-    }
+    this.addRect(-1, -1, 1, 1);
+
+    // for (let i = 0; i < this.gallery.galleryImages.length; i++) {
+    //   const galleryImage = this.gallery.galleryImages[i];
+    //   const x1 = galleryImage.cellPosition.x;
+    //   const y1 = galleryImage.cellPosition.y;
+    //   const size = Math.max(galleryImage.width, galleryImage.height);
+    //   this.addRect(x1, y1, x1 + size, y1 - size);
+    // }
 
     this.flushQuads();
   },
@@ -205,7 +190,7 @@ export default {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.textureCoords, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(shader.textureCoordAttribute, FLOATS_PER_VERT, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shader.textureCoordAttribute, FLOATS_PER_TEXTURE_VERT, gl.FLOAT, false, 0, 0);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
@@ -217,7 +202,7 @@ export default {
 
   initArrays() {
     this.verts = new Float32Array(MAX_QUADS_PER_BATCH * VERTS_PER_QUAD * FLOATS_PER_VERT);
-    this.textureCoords = new Float32Array(MAX_QUADS_PER_BATCH * VERTS_PER_QUAD * FLOATS_PER_VERT);
+    this.textureCoords = new Float32Array(MAX_QUADS_PER_BATCH * VERTS_PER_QUAD * FLOATS_PER_TEXTURE_VERT);
     this.indices = new Uint16Array(MAX_QUADS_PER_BATCH * INDICES_PER_QUAD);
     this.quadCount = 0;
   },
@@ -239,7 +224,7 @@ export default {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    this.mvMatrix = mat3.create();
+    this.mvMatrix = mat4.create();
     atlas.texture = this.buildTexture(atlas.image);
     this.initColorTexture();
   }

@@ -126,5 +126,7 @@ ecmaFeatures:
   spread: true # enable the spread operator for arrays
   templateStrings: true # enable template strings
 globals:
+  vec3: true
   mat3: true
+  mat4: true
   microAjax: true
