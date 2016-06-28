@@ -9,7 +9,6 @@ const FLOATS_PER_TEXTURE_VERT = 2;
 const eye = vec3.create();
 const center = vec3.create();
 const up = vec3.clone([0, 1, 0]);
-let cameraAngle = 0;
 
 export default {
   initialize(canvas) {
