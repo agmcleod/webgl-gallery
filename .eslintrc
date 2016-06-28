@@ -127,6 +127,7 @@ ecmaFeatures:
   templateStrings: true # enable template strings
 globals:
   vec3: true
+  vec4: true
   mat3: true
   mat4: true
   microAjax: true
