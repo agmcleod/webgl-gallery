@@ -6,9 +6,10 @@ const INDICES_PER_QUAD = 6;
 const FLOATS_PER_VERT = 3;
 const FLOATS_PER_TEXTURE_VERT = 2;
 
-const eye = vec3.clone([0, 0, 3]);
+const eye = vec3.create();
 const center = vec3.create();
 const up = vec3.clone([0, 1, 0]);
+let cameraAngle = 0;
 
 export default {
   initialize(canvas) {
@@ -146,6 +147,11 @@ export default {
     mat4.identity(this.pMatrix);
     mat4.perspective(this.pMatrix, 45 * Math.PI / 180, this.canvas.clientWidth / this.canvas.clientHeight, 1, 100);
 
+    if (this.changeLookat) {
+      this.changeLookat = false;
+      mat4.lookAt(this.lookatMatrix, eye, center, up);
+    }
+
     mat4.identity(this.mvMatrix);
     mat4.translate(this.mvMatrix, this.mvMatrix, this.cameraOffset);
     mat4.multiply(this.mvMatrix, this.mvMatrix, this.lookatMatrix);
@@ -232,11 +238,17 @@ export default {
     gl.bindTexture(gl.TEXTURE_2D, null);
   },
 
+  orbitCamera(x, z) {
+    eye[0] = x;
+    eye[2] = z;
+    this.changeLookat = true;
+  },
+
   resetQuadCount() {
     this.quadCount = 0;
   },
 
-  setupGL(atlas) {
+  setupGL(radius, atlas) {
     this.initArrays();
     this.resetQuadCount();
     const gl = this.gl;
@@ -248,6 +260,9 @@ export default {
     this.mvMatrix = mat4.create();
     this.cameraOffset = vec3.clone([0, 0, 0]);
     this.lookatMatrix = mat4.create();
+
+    eye[2] = radius;
+
     mat4.lookAt(this.lookatMatrix, eye, center, up);
 
     atlas.texture = this.buildTexture(atlas.image);

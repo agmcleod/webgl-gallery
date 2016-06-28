@@ -5,6 +5,9 @@ import InputManager, {KEYS} from './input';
 
 let time;
 const SPEED = 0.001;
+const ROTATE_SPEED = 0.005;
+const RADIUS = 3;
+let cameraAngle = 0;
 function update() {
   const currentTime = Date.now();
   const delta = currentTime - time;
@@ -27,6 +30,19 @@ function update() {
   if (InputManager.isKeyPressed(KEYS.E)) {
     cameraOffset[2] -= SPEED * delta;
   }
+  if (InputManager.isKeyPressed(KEYS.Z)) {
+    cameraAngle += ROTATE_SPEED * delta;
+  }
+  if (InputManager.isKeyPressed(KEYS.C)) {
+    cameraAngle -= ROTATE_SPEED * delta;
+  }
+
+  if (InputManager.isKeyPressed(KEYS.Z) || InputManager.isKeyPressed(KEYS.C)) {
+    const x = RADIUS * Math.sin(cameraAngle);
+    const z = RADIUS * Math.cos(cameraAngle);
+    Webgl.orbitCamera(x, z);
+  }
+
   Webgl.draw();
   time = currentTime;
   requestAnimationFrame(update);
@@ -39,7 +55,7 @@ AssetLoader.loadAtlas(function(atlas) {
     Webgl.initialize(canvas);
     Webgl.compileShaders(vert, frag);
     Webgl.createBuffers();
-    Webgl.setupGL(atlas);
+    Webgl.setupGL(RADIUS, atlas);
 
     InputManager.bind();
 

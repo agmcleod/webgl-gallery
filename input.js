@@ -4,17 +4,17 @@ export const KEYS = {
   S: 83,
   D: 68,
   Q: 81,
-  E: 69
+  E: 69,
+  Z: 90,
+  C: 67
 };
 
-const capture = {
-  [KEYS.W]: KEYS.W,
-  [KEYS.A]: KEYS.A,
-  [KEYS.S]: KEYS.S,
-  [KEYS.D]: KEYS.D,
-  [KEYS.Q]: KEYS.Q,
-  [KEYS.E]: KEYS.E
-};
+const capture = {};
+
+const keyNames = Object.keys(KEYS);
+for (let i = 0; i < keyNames.length; i++) {
+  capture[KEYS[keyNames[i]]] = KEYS[keyNames[i]];
+}
 
 const pressedKeys = {};
 
