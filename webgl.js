@@ -50,22 +50,22 @@ export default {
     shader.colorUniform = gl.getUniformLocation(shader.shaderProgram, "color");
   },
 
-  addPositionalData(vertexOffset, x1, y1, x2, y2) {
+  addPositionalData(vertexOffset, x1, y1, x2, y2, z) {
     this.verts[vertexOffset] = x1;
     this.verts[vertexOffset + 1] = y1;
-    this.verts[vertexOffset + 2] = 0;
+    this.verts[vertexOffset + 2] = z;
 
     this.verts[vertexOffset + 3] = x2;
     this.verts[vertexOffset + 4] = y1;
-    this.verts[vertexOffset + 5] = 0;
+    this.verts[vertexOffset + 5] = z;
 
     this.verts[vertexOffset + 6] = x1;
     this.verts[vertexOffset + 7] = y2;
-    this.verts[vertexOffset + 8] = 0;
+    this.verts[vertexOffset + 8] = z;
 
     this.verts[vertexOffset + 9] = x2;
     this.verts[vertexOffset + 10] = y2;
-    this.verts[vertexOffset + 11] = 0;
+    this.verts[vertexOffset + 11] = z;
 
     const indiceOffset = this.quadCount * INDICES_PER_QUAD;
     const vertexIndex = vertexOffset / FLOATS_PER_VERT;
@@ -79,7 +79,7 @@ export default {
 
   addRect(x1, y1, x2, y2) {
     const vertexOffset = this.getVertexIndex();
-    this.addPositionalData(vertexOffset, x1, y1, x2, y2);
+    this.addPositionalData(vertexOffset, x1, y1, x2, y2, -0.05);
 
     const tx1 = 0;
     const ty1 = 0;
@@ -103,9 +103,9 @@ export default {
     this.quadCount++;
   },
 
-  addQuad(x1, y1, x2, y2, atlas, region) {
+  addImage(x1, y1, x2, y2, atlas, region) {
     const vertexOffset = this.getVertexIndex();
-    this.addPositionalData(vertexOffset, x1, y1, x2, y2);
+    this.addPositionalData(vertexOffset, x1, y1, x2, y2, 0);
 
     const sx = region.x;
     const sy = region.y;
@@ -172,7 +172,7 @@ export default {
       const x1 = galleryImage.position.x;
       const y1 = galleryImage.position.y;
       const region = atlas.regions[galleryImage.regionName];
-      this.addQuad(x1, y1, x1 + galleryImage.width, y1 - galleryImage.height, atlas, region);
+      this.addImage(x1, y1, x1 + galleryImage.width, y1 - galleryImage.height, atlas, region);
     }
 
     this.flushQuads();
