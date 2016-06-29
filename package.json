@@ -1,7 +1,6 @@
 {
   "name": "webgl-gallery-torontojs",
   "version": "1.0.0",
-  "melon_version": "2.1.3",
   "devDependencies": {
     "babel-core": "^6.1.21",
     "babel-eslint": "^4.1.5",
