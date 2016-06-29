@@ -84,7 +84,6 @@ rules:
   no-with: 2 # disallow use of the with statement
   object-curly-spacing: 0 # require or disallow padding inside curly braces
   object-shorthand: [2, 'methods'] # require method and property shorthand syntax for object literals
-  one-var: [2, {'uninitialized': 'always'}] # require or disallow one variable declaration per function
   operator-assignment: [2, 'always'] # require assignment operator shorthand where possible or prohibit it entirely
   operator-linebreak: [2, 'after'] # enforce operators to be placed before or after line breaks
   padded-blocks: [2, 'never'] # enforce padding within blocks

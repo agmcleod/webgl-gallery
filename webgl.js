@@ -180,14 +180,15 @@ export default {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bindTexture(gl.TEXTURE_2D, this.colorTexture);
 
-    gl.uniform3f(this.shader.colorUniform, 0.05, 0.9, 0.05);
+    gl.uniform3f(this.shader.colorUniform, 0.47, 0.84, 0.96);
 
     for (let i = 0; i < this.gallery.galleryImages.length; i++) {
       const galleryImage = this.gallery.galleryImages[i];
-      const x1 = galleryImage.cellPosition.x;
-      const y1 = galleryImage.cellPosition.y;
-      const size = Math.max(galleryImage.width, galleryImage.height);
-      this.addRect(x1, y1, x1 + size, y1 - size);
+      const x1 = galleryImage.position.x - 0.02;
+      const y1 = galleryImage.position.y + 0.02;
+      const width = galleryImage.width + 0.04;
+      const height = galleryImage.height + 0.04;
+      this.addRect(x1, y1, x1 + width, y1 - height);
     }
 
     this.flushQuads();

@@ -9,16 +9,32 @@
 	"sourceSize": {"w":650,"h":433}
 },
 {
+	"filename": "moonlightfalls.jpg",
+	"frame": {"x":2,"y":437,"w":500,"h":667},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":667},
+	"sourceSize": {"w":500,"h":667}
+},
+{
 	"filename": "mountains.png",
-	"frame": {"x":2,"y":437,"w":500,"h":281},
+	"frame": {"x":2,"y":1106,"w":500,"h":281},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":281},
 	"sourceSize": {"w":500,"h":281}
 },
 {
+	"filename": "naltar.jpg",
+	"frame": {"x":504,"y":1046,"w":500,"h":300},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":300},
+	"sourceSize": {"w":500,"h":300}
+},
+{
 	"filename": "thorswell.png",
-	"frame": {"x":654,"y":2,"w":500,"h":607},
+	"frame": {"x":504,"y":437,"w":500,"h":607},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":607},
@@ -29,8 +45,8 @@
 	"version": "1.0",
 	"image": "atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":2048,"h":2048},
+	"size": {"w":1024,"h":2048},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:0fffa40c2024e5cc058a348d3cc56d60:d2be67cfc062c443d91c5e555f25d962:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3c43f33af869142059b2573181f61d5a:8bd8d9742e7efafd79aa4bb0d629c23f:cbce6b53f0f49e0bf15173c25c41f876$"
 }
 }
