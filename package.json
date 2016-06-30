@@ -17,6 +17,6 @@
     "babel-runtime": "^6.3.13"
   },
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8100"
+    "start": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8100"
   }
 }
