@@ -114,7 +114,7 @@ export default {
     const sh = region.h;
 
     const tx1 = sx / atlas.image.width;
-    const ty1 = (sy / atlas.image.height);
+    const ty1 = sy / atlas.image.height;
     const tx2 = ((sx + sw) / atlas.image.width);
     const ty2 = ((sy + sh) / atlas.image.height);
 
@@ -141,9 +141,7 @@ export default {
     gl.viewport(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    const shader = this.shader;
 
-    gl.activeTexture(gl.TEXTURE0);
     mat4.identity(this.pMatrix);
     mat4.perspective(this.pMatrix, 45 * Math.PI / 180, this.canvas.clientWidth / this.canvas.clientHeight, 1, 100);
 
@@ -157,13 +155,10 @@ export default {
     mat4.multiply(this.mvMatrix, this.mvMatrix, this.lookatMatrix);
     mat4.multiply(this.mvMatrix, this.pMatrix, this.mvMatrix);
 
+    const shader = this.shader;
     gl.uniformMatrix4fv(shader.matrixUniform, false, this.mvMatrix);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
     const atlas = this.atlas;
-    gl.uniform1i(shader.textureUniform, 0);
-    gl.activeTexture(gl.TEXTURE0);
-
     gl.bindTexture(gl.TEXTURE_2D, atlas.texture);
 
     gl.uniform3f(this.shader.colorUniform, 1.0, 1.0, 1.0);
@@ -178,7 +173,6 @@ export default {
 
     this.flushQuads();
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bindTexture(gl.TEXTURE_2D, this.colorTexture);
 
     gl.uniform3f(this.shader.colorUniform, 0.47, 0.84, 0.96);
@@ -267,6 +261,7 @@ export default {
     mat4.lookAt(this.lookatMatrix, eye, center, up);
 
     atlas.texture = this.buildTexture(atlas.image);
+    this.atlas = atlas;
     this.initColorTexture();
   }
 };
