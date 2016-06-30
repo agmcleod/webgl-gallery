@@ -48,6 +48,7 @@ export default {
     shader.textureUniform = gl.getUniformLocation(shader.shaderProgram, "texture");
     shader.matrixUniform = gl.getUniformLocation(shader.shaderProgram, "uMatrix");
     shader.colorUniform = gl.getUniformLocation(shader.shaderProgram, "color");
+    gl.useProgram(this.shader.shaderProgram);
   },
 
   addPositionalData(vertexOffset, x1, y1, x2, y2, z) {

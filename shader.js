@@ -3,11 +3,6 @@ export default class Shader {
     const shaderProgram = gl.createProgram();
     this.linkShaderProgram(gl, shaderProgram, vertText, fragText);
 
-    gl.useProgram(shaderProgram);
-
-    this.setShaderAttributes(gl, shaderProgram);
-
-    this.setMatrixUniforms(gl, shaderProgram);
     this.shaderProgram = shaderProgram;
   }
 
@@ -27,18 +22,5 @@ export default class Shader {
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
       throw new Error("Could not initialize shaders");
     }
-  }
-
-  setMatrixUniforms(gl, shaderProgram) {
-    this.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-    this.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-  }
-
-  setShaderAttributes(gl, shaderProgram) {
-    this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-    gl.enableVertexAttribArray(this.vertexPositionAttribute);
-
-    this.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-    gl.enableVertexAttribArray(this.vertexColorAttribute);
   }
 }
