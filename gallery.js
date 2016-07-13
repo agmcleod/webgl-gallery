@@ -20,7 +20,11 @@ export default class Gallery {
       const region = this.atlas.regions[regionName];
 
       let width, height;
+      // this converts the desired pixel size of sorts to clip coordinate size
+      // since -1 to 1 is a difference of two, we multiply the 0-1 value by two.
       const clipCoordinatesSize = (this.targetSize / this.screenWidth) * 2;
+      // Set the slot size of the image + rectangle to a square. This is more the invisible size of each photo
+      // we display the photo & square at the correct aspect ratio still.
       if (region.w > region.h) {
         width = clipCoordinatesSize;
         height = clipCoordinatesSize * (region.h / region.w);
@@ -29,9 +33,13 @@ export default class Gallery {
         height = clipCoordinatesSize;
       }
 
+      // convert the x & y values to clip coordinate values
+      // again multiplying by 2 for the -1 to 1 difference.
+      // Subtracting 1 to deal with the negative offset, and 0,0 being in the middle, not the left bound
       x = (x / this.screenWidth) * 2 - 1;
       y = (1 - y / this.screenHeight) * 2 - 1;
 
+      // this is to offset the positioning so it's centered within the "square"
       if (region.w > region.h) {
         y -= (width - height) / 2;
       } else {
@@ -44,8 +52,10 @@ export default class Gallery {
       this.galleryImages.push(gi);
 
       colCount++;
+      // add a bit of padding between each square
       x = (this.targetSize + this.padding) * colCount;
 
+      // go next row down after 3 images
       if ((i + 1) % 3 === 0) {
         x = 0;
         colCount = 0;

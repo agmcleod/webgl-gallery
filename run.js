@@ -12,6 +12,7 @@ function update() {
   const currentTime = Date.now();
   const delta = currentTime - time;
   const cameraOffset = Webgl.cameraOffset;
+  // Use the input manager to move the cameraOffset vector around. The speed is just a value i played with to have visible movement.
   if (InputManager.isKeyPressed(KEYS.W)) {
     cameraOffset[1] += SPEED * delta;
   }
@@ -38,11 +39,13 @@ function update() {
   }
 
   if (InputManager.isKeyPressed(KEYS.Z) || InputManager.isKeyPressed(KEYS.C)) {
+    // use the camera angle to determine the resulting x & z values based on the desired radius
     const x = RADIUS * Math.sin(cameraAngle);
     const z = RADIUS * Math.cos(cameraAngle);
     Webgl.orbitCamera(x, z);
   }
 
+  // Draw each frame. With requestAnimationFrame, this will be called up to 60 times per second.
   Webgl.draw();
   time = currentTime;
   requestAnimationFrame(update);
